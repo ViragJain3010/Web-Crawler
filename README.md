@@ -97,10 +97,13 @@ The crawler logs all operations to both console and 'crawler.log' file, includin
 
 ## Execution flow
 
-1. **ParallelCrawler** class object is intialised
-2. `ParallelCrawler.run()` method is called which in turn calls the async function `ParallelCrawler.crawl_all_domains()` with asyncio to execute asyncronous functions
-3. **DomainCrawler object** `(crawler)` is intialised over all the domains and start executing parallely. i.e. in simple words - A bot is set-up on every domain and start scraping the domains independently & parallely.
-4. `DomainCrawler.start()` : Starts the crawling of a domain
+1. **ParallelCrawler** class object is initialized with domains and configuration
+2. `ParallelCrawler.run()` method is called which in turn calls the *async* function `ParallelCrawler.crawl_all_domains()` with asyncio to execute asynchronous functions
+3. **DomainCrawler** object `(crawler)` is intialised over all the domains and sets up parallel processing.
+4. Each DomainCrawler's `start()` method:
+    - Initiates crawling from the domain's root URL
+    - Manages the Selenium WebDriver lifecycle
+    - Returns collected product URLs
 5. `DomainCrawler.crawl_url()` : Extracts all the urls on a page. It checks if the url *is product page* by matching certain product page URL patterns.
     - If **YES** -  Adds it to product URLs list
     - If **NO** - Checks if it's within depth limit and not excluded, then crawls it to find more product URLs
