@@ -117,3 +117,34 @@ The crawler logs all operations to both console and 'crawler.log' file, includin
     - Timeout occurs
     - User stops the program
 8. Finally, all collected product URLs are saved to a JSON file, organized by domain
+
+## Approach  
+
+The project was developed in three phases, progressively enhancing functionality and robustness. Below is a detailed breakdown of each phase and the final solution:  
+
+### Initial Approach (`main.py`)  
+In the initial phase, we focused on the basics of web crawling, such as:  
+- Extracting URLs from web pages.  
+- Navigating to related URLs within the same domain.  
+
+This phase laid the foundation for understanding web crawling mechanics and URL traversal.  
+
+### Advanced Approach (`advance.py`)  
+Building on the basics, the second phase introduced advanced topics, including:  
+1. **Error Handling:** Ensuring the crawler is resilient to broken links, timeouts, and other runtime errors.  
+2. **Dynamic Content Loading:** Handling challenges like infinite scrolling and AJAX-loaded content.  
+3. **Captcha Handling:** Investigating techniques to bypass or manage captchas efficiently.  
+4. **Authentication Handling:** Addressing scenarios where login credentials are required to access certain pages.  
+
+This phase aimed to make the crawler more versatile and capable of handling real-world complexities.  
+
+### Final Solution (`version2.py`)  
+In the final phase, we combined the learnings from both previous phases to create a comprehensive and efficient solution. Key features include:  
+1. **Basic URL Handling and Navigation:** Leveraging the robust URL extraction and traversal techniques from `main.py`.  
+2. **Dynamic Content Handling:** Incorporating strategies for managing infinite scrolling, AJAX-loaded elements, and other dynamic content challenges from `advance.py`.  
+3. **Product Page Identification:**  
+   - Visiting the homepages of target domains and extracting all available URLs.  
+   - Filtering URLs based on patterns indicative of product pages.  
+   - Excluding generic and domain-specific patterns to improve accuracy.  
+
+This holistic approach ensures efficient URL discovery, robust error handling, and effective product page identification.  
