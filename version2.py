@@ -151,7 +151,7 @@ class DomainCrawler:
 
             while scroll_attempts < max_scroll_attempts:
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(2)  # Replace asyncio.sleep with time.sleep for Selenium else malloc error
+                time.sleep(2)  # Replace asyncio.sleep with time.sleep for Selenium else error
                 
                 new_height = self.driver.execute_script("return document.body.scrollHeight")
                 elements = self.driver.find_elements(By.TAG_NAME, "a")
@@ -217,7 +217,7 @@ class DomainCrawler:
                                 tasks.append(self.crawl_url(absolute_url))
                     
                     if tasks:
-                        await asyncio.gather(*tasks) # .gather() is necessary for parallel crawling
+                        await asyncio.gather(*tasks) 
                 
                 elif response.status in [404, 502, 503]:
                     logger.warning(f"[{self.domain}] Error {response.status} for URL: {url}")
@@ -264,7 +264,7 @@ class ParallelCrawler:
             try:
                 # Use asyncio.wait_for to implement timeout
                 results = await asyncio.wait_for(
-                    asyncio.gather(*tasks),
+                    asyncio.gather(*tasks), # .gather() is necessary for parallel crawling
                     timeout=self.timeout_seconds
                 )
                 

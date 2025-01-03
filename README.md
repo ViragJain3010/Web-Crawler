@@ -1,194 +1,116 @@
-# E-commerce Product URL Crawler
+# Web Crawler
 
-This project is an advanced **web crawler** designed to discover product URLs from multiple e-commerce websites. It uses **Playwright** for browser automation and includes features like dynamic content handling, infinite scroll simulation, and robust URL matching heuristics.
-
----
+A robust, asynchronous web crawler designed to extract product URLs from e-commerce websites. The crawler supports parallel processing of multiple domains while handling dynamic content and implementing various optimization strategies.
 
 ## Features
 
-- **Domain-based Crawling**: Targets specific e-commerce domains.
-- **Dynamic Content Support**: Handles dynamically loaded content and infinite scrolling.
-- **Product Page Detection**:
-  - URL pattern matching.
-  - Content pattern heuristics (e.g., "Add to Cart", "Product Description").
-  - Schema.org structured data parsing for `"@type": "Product"`.
-- **Retry Mechanism**: Handles intermittent network or server errors.
-- **Stealth Mode**: Avoids bot detection using `playwright_stealth`.
-- **JSON Output**: Stores discovered URLs in a structured file.
-
----
+- Parallel crawling of multiple domains
+- Dynamic content handling via Selenium
+- Configurable depth and URL limits
+- Automatic handling of JavaScript-loaded content
+- Custom URL pattern matching for products
+- Domain-specific exclusion patterns
+- Comprehensive logging system
+- Rate limiting and timeout controls
 
 ## Requirements
 
-### Prerequisites
+```
+python >= 3.7
+aiohttp
+beautifulsoup4
+selenium
+```
 
-- **Python 3.9+**
-- **Node.js** (required for Playwright installation)
-- **Playwright** and its browser dependencies
+## Installation
 
-### Python Dependencies
-
-Install dependencies using `pip`:
-
+1. Clone the repository
+2. Create virtual environment:
+  ```sh
+  python3 -m venv venv 
+  ```
+3. Activate the environemtn:
+```sh
+  C:> venv\Scripts\activate.bat # For Windows
+  source venv/bin/activate # For Linux/MacOS 
+```
+4. Install dependencies:
+  ```bash
+  pip install aiohttp beautifulsoup4 selenium
+  ```
+5. Start the program
 ```bash
-pip install -r requirements.txt
+python3 version2.py
 ```
-
-Example `requirements.txt`:
-```
-asyncio
-playwright
-playwright-stealth
-```
-
----
 
 ## Usage
 
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
-### 2. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Configure Target Domains
-
-Update the `domains` list in the `main` block:
+Basic usage example:
 
 ```python
 domains = [
-    "amazon.com",
-    "flipkart.com"
+    "https://flipkart.com",
+    "https://amazon.in"
 ]
+
+crawler = ParallelCrawler(
+    domains=domains,
+    max_urls_per_domain=500,
+    max_depth=3,
+    timeout_seconds=3600
+)
+crawler.run()
 ```
 
-### 4. Run the Crawler
+## Configuration
 
-Run the program with:
+- `domains`: List of domains to be crawled
+- `max_urls_per_domain`: Maximum number of URLs to crawl per domain (default: 10000)
+- `max_depth`: Maximum depth for crawling links (default: 10)
+- `timeout_seconds`: Timeout for crawling operation per domain (default: 3600)
+- `output_file`: Path for JSON output file (default: 'product_urls.json')
 
-```bash
-python advance.py
-```
 
-The crawler will:
-- Navigate to each domain.
-- Extract product URLs.
-- Handle dynamic content and infinite scroll.
-- Save the results to a JSON file.
-
----
 
 ## Output
 
-Discovered URLs are saved in `product_urls.json`. Example structure:
-
+Results are saved in JSON format:
 ```json
 {
-  "amazon.com": {
-    "urls": [
-      "https://www.amazon.com/product/1234",
-      "https://www.amazon.com/dp/B09XYZ"
-    ],
-    "count": 2,
-    "timestamp": "2025-01-01T12:00:00Z"
-  },
-  "flipkart.com": {
-    "urls": [
-      "https://www.flipkart.com/item/4567"
-    ],
-    "count": 1,
-    "timestamp": "2025-01-01T12:00:00Z"
-  }
+  "flipkart.com": [
+    "https://flipkart.com/product/1",
+    "https://domaflipkartin1.com/product/2"
+  ],
+  "amazon.com": [
+    "https://amazon.com/product/1"
+  ]
 }
 ```
 
----
-
-## Key Components
-
-### 1. Initialization
-- **Domains**: List of e-commerce websites to crawl.
-- **Configurations**: Includes retry logic, scrolling behavior, and dynamic content handling.
-
-### 2. Crawling Workflow
-- **`crawl_all_domains`**: Handles multiple domains concurrently.
-- **`crawl_domain`**: Navigates through each domain's pages and extracts URLs.
-- **`crawl_page`**: Processes individual pages, detecting product pages and handling dynamic content.
-
-### 3. URL Matching
-- **`is_product_page`**:
-  - Matches URL patterns like `/product/1234`.
-  - Detects content patterns like "Add to Cart".
-  - Parses `Schema.org` data for product identification.
-
-### 4. Infinite Scroll Handling
-- Simulates user scrolling.
-- Detects and clicks "Load More" buttons if present.
-
-### 5. Retry Logic
-- Retries failed requests up to a configurable maximum.
-
----
-
-## Configuration Options
-
-You can customize various crawler parameters in the `EcommerceCrawler` constructor:
-
-```python
-crawler = EcommerceCrawler(
-    domains=["amazon.com", "flipkart.com"],
-    max_retries=3,              # Retry count for failed requests
-    retry_delay=5,              # Delay between retries (seconds)
-    scroll_timeout=30,          # Max time for infinite scrolling (seconds)
-    max_scroll_attempts=10,     # Max scrolling attempts per page
-    dynamic_wait=5              # Wait time for dynamic content (seconds)
-)
-```
-
----
-
-## Example
-
-1. Start with domains:
-   ```python
-   domains = ["amazon.com"]
-   ```
-2. The crawler extracts URLs like:
-   - `https://www.amazon.com/product/1234`
-   - `https://www.amazon.com/dp/B09XYZ`
-3. Saves results in `product_urls.json`.
-
----
-
 ## Logging
 
-Logs are written to `crawler.log` and displayed in the console. Example log:
+The crawler logs all operations to both console and 'crawler.log' file, including:
+- Crawling progress
+- Error messages
+- CAPTCHA detection
+- Timeout warnings
 
-```
-2025-01-01 12:00:00 - INFO - Found product URL: https://www.amazon.com/product/1234 (confidence: 0.95)
-2025-01-01 12:05:00 - ERROR - Failed to access https://www.amazon.com after 3 attempts.
-```
+## Execution flow
 
----
-
-## Troubleshooting
-
-- **Error: Playwright not installed**:
-  Run:
-  ```bash
-  pip install playwright
-  playwright install
-  ```
-
-- **Slow Crawling**:
-  - Reduce `dynamic_wait` or increase `scroll_timeout`.
-
-- **Bot Detection**:
-  - Ensure `stealth_async` is properly applied.
+1. **ParallelCrawler** class object is intialised
+2. `ParallelCrawler.run()` method is called which in turn calls the async function `ParallelCrawler.crawl_all_domains()` with asyncio to execute asyncronous functions
+3. **DomainCrawler object** `(crawler)` is intialised over all the domains and start executing parallely. i.e. in simple words - A bot is set-up on every domain and start scraping the domains independently & parallely.
+4. `DomainCrawler.start()` : Starts the crawling of a domain
+5. `DomainCrawler.crawl_url()` : Extracts all the urls on a page. It checks if the url *is product page* by matching certain product page URL patterns.
+    - If **YES** -  Adds it to product URLs list
+    - If **NO** - Checks if it's within depth limit and not excluded, then crawls it to find more product URLs
+6. `DomainCrawler.handle_dynamic_content()`: If a page uses JavaScript to load content:
+    - Opens the page in a headless browser
+    - Scrolls to load all content
+    - Extracts URLs from the fully loaded page
+7. The process continues until:
+    - Maximum URLs limit is reached
+    - Maximum depth is reached
+    - Timeout occurs
+    - User stops the program
+8. Finally, all collected product URLs are saved to a JSON file, organized by domain
