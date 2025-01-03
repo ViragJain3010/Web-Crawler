@@ -104,7 +104,7 @@ The crawler logs all operations to both console and 'crawler.log' file, includin
     - Initiates crawling from the domain's root URL
     - Manages the Selenium WebDriver lifecycle
     - Returns collected product URLs
-5. `DomainCrawler.crawl_url()` : Extracts all the urls on a page. It checks if the url *is product page* by matching certain product page URL patterns.
+5. `DomainCrawler.crawl_url()` : Extracts all the urls on a page. It checks if the url ***is product page*** by matching certain product page URL patterns.
     - If **YES** -  Adds it to product URLs list
     - If **NO** - Checks if it's within depth limit and not excluded, then crawls it to find more product URLs
 6. `DomainCrawler.handle_dynamic_content()`: If a page uses JavaScript to load content:
